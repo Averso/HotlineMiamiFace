@@ -93,7 +93,7 @@ static void init()
   
   // Make sure the time is displayed from the start
   update_time();
- // update_day();
+  update_day();
   if(settings.date_enabled)
     update_date();
 }
@@ -190,7 +190,7 @@ static void main_window_load(Window *window)
   layer_add_child(window_layer,text_layer_get_layer(s_time1_layer));          
   layer_add_child(window_layer,text_layer_get_layer(s_date_layer));         //date
   
- main_window_update();
+  main_window_update();
 }
 
 static void main_window_unload(Window *window)
@@ -219,7 +219,6 @@ static void main_window_unload(Window *window)
   gbitmap_destroy(s_background_bitmap);
   bitmap_layer_destroy(s_background_layer);
 }
-
 
 static void main_window_update()
 {   
@@ -258,10 +257,8 @@ static void main_window_update()
   }
   else
   {
-    text_layer_set_text(s_date_layer,"");
-          
-  }
-  
+    text_layer_set_text(s_date_layer,"");          
+  }  
   
  //date font
   if(strcmp(settings.date_font,"pixel") == 0)
@@ -284,7 +281,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
   }
   if(units_changed & DAY_UNIT)
   {
-   // update_day();
+   update_day();
     
    if(settings.date_enabled)
       update_date();
@@ -403,11 +400,11 @@ static void prv_load_settings() {
 
 static void prv_default_settings() {
    
-  ///char* position; 
-  //char* date_font;
   settings.background_enabled = true;
   settings.background_color = GColorWhite;
   settings.date_enabled = true;
+  settings.position = "top";
+  settings.date_font = "lies";
 }
 
 static void set_weekday_y(int y)

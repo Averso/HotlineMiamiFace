@@ -4,7 +4,7 @@
         "pebble-clay": "^1.0.3"
     },
     "keywords": [],
-    "name": "hotline-miami",
+    "name": "hotline-miami-face",
     "pebble": {
         "displayName": "Hotline Miami",
         "enableMultiJS": true,
@@ -19,6 +19,24 @@
         "projectType": "native",
         "resources": {
             "media": [
+                {
+                    "file": "fonts/pixelmix.ttf",
+                    "name": "FONT_PIXELMIX_11",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/truelies.ttf",
+                    "name": "FONT_TRUELIES_13",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "file": "images/background.png",
+                    "name": "IMAGE_BACKGROUND",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
                 {
                     "file": "fonts/discoduckv2c.ttf",
                     "name": "FONT_DISCODUCK_CON_30",
@@ -43,24 +61,6 @@
                     "characterRegex": "[0-9:]",
                     "file": "fonts/RobotoCondensed-Bold.ttf",
                     "name": "FONT_ROBOTO_40",
-                    "targetPlatforms": null,
-                    "type": "font"
-                },
-                {
-                    "file": "fonts/True Lies",
-                    "name": "FONT_TRUELIES_13",
-                    "targetPlatforms": null,
-                    "type": "font"
-                },
-                {
-                    "file": "images/Background",
-                    "name": "IMAGE_BACKGROUND",
-                    "targetPlatforms": null,
-                    "type": "bitmap"
-                },
-                {
-                    "file": "fonts/PixelMix font",
-                    "name": "FONT_PIXELMIX_11",
                     "targetPlatforms": null,
                     "type": "font"
                 }
