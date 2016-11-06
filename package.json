@@ -20,6 +20,18 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/background_ptr.png",
+                    "name": "IMAGE_BACKGROUND_PTR",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/background_pt.png",
+                    "name": "IMAGE_BACKGROUND_PT",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
                     "file": "fonts/pixelmix.ttf",
                     "name": "FONT_PIXELMIX_11",
                     "targetPlatforms": null,
@@ -30,12 +42,6 @@
                     "name": "FONT_TRUELIES_13",
                     "targetPlatforms": null,
                     "type": "font"
-                },
-                {
-                    "file": "images/background.png",
-                    "name": "IMAGE_BACKGROUND",
-                    "targetPlatforms": null,
-                    "type": "bitmap"
                 },
                 {
                     "file": "fonts/discoduckv2c.ttf",
@@ -68,12 +74,13 @@
         },
         "sdkVersion": "3",
         "targetPlatforms": [
-            "basalt"
+            "basalt",
+            "chalk"
         ],
         "uuid": "22a381e1-f2c8-4450-9db5-1c996f2a6410",
         "watchapp": {
             "watchface": true
         }
     },
-    "version": "1.0.0"
+    "version": "1.2.0"
 }

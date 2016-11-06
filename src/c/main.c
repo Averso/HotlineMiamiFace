@@ -17,7 +17,13 @@ static GBitmap *s_background_bitmap;                              //bitmaps
 
 //positions of layers 
 static int date_x = 0;
+// y position of date depending on platform
+#if defined(PBL_PLATFORM_BASALT)
 static int date_y = 150;
+#endif
+#if defined(PBL_PLATFORM_CHALK)
+static int date_y = 120;
+#endif  
 static int day_x = 0;
 static int time_x = 0;
 //positions of clock,weekday layers - center
@@ -26,6 +32,9 @@ static int timec_y = 67;
 //positions of clock,weekday layers - top
 static int dayt_y = 15;
 static int timet_y = 37;
+
+
+
 static  GRect bounds;
 
 static void main_window_load(Window *window);
@@ -106,7 +115,6 @@ static void init()
     update_date();
 }
 
-
 //EXIT
 static void unload()
 {
@@ -131,8 +139,13 @@ static void main_window_load(Window *window)
   
   //BACKGROUND
   
-  //load bitmap
-  s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);  
+  //load bitmap depending on platform
+  #if defined(PBL_PLATFORM_BASALT)
+  s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND_PT);
+  #endif
+  #if defined(PBL_PLATFORM_CHALK)
+  s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND_PTR);
+  #endif
   s_background_layer=bitmap_layer_create(bounds);
   window_set_background_color(window, settings.background_color);
     
