@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 // Persistent storage key
 #define SETTINGS_KEY 1
 
@@ -44,13 +45,18 @@ static void set_weekday_y(int y);
 static void set_time_y(int y);
 static void main_window_update();
 
+
+//enums for settings
+typedef enum {PIXEL, LIES} DateFont;
+typedef enum {TOP, CENTER} Position;
+
 // Define our settings struct
 typedef struct ClaySettings {
   GColor background_color;
   bool background_enabled;
   bool date_enabled;
-  char* position; 
-  char* date_font;
+  Position position; 
+  DateFont date_font;
 } ClaySettings;
 
 // An instance of the struct
@@ -69,9 +75,11 @@ int main(void)
 //INIT
 static void init()
 {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "INIT Try to load settings");
   //load saved settings
   prv_load_settings();
 
+   APP_LOG(APP_LOG_LEVEL_DEBUG, "Position load setting after load: %d",  settings.position);
   // Listen for AppMessages
   app_message_register_inbox_received(prv_inbox_received_handler);
   app_message_open(128, 128);
@@ -110,6 +118,7 @@ static void unload()
 
 static void main_window_load(Window *window)
 {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Position on beginig of win load: %d",  settings.position);
   //get info about window
   Layer *window_layer = window_get_root_layer(window);
   bounds = layer_get_bounds(window_layer);
@@ -135,7 +144,7 @@ static void main_window_load(Window *window)
   
   //days
   s_day1_layer = text_layer_create(
-    GRect(day_x, dayc_y, bounds.size.w, 35));
+    GRect(day_x, dayt_y, bounds.size.w, 35));
   s_day2_layer = text_layer_create(
     GRect(day_x+2, dayt_y+2, bounds.size.w, 35));
   s_day3_layer = text_layer_create(
@@ -190,6 +199,7 @@ static void main_window_load(Window *window)
   layer_add_child(window_layer,text_layer_get_layer(s_time1_layer));          
   layer_add_child(window_layer,text_layer_get_layer(s_date_layer));         //date
   
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Window load");
   main_window_update();
 }
 
@@ -222,7 +232,7 @@ static void main_window_unload(Window *window)
 
 static void main_window_update()
 {   
-  
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Position window update: %d",  settings.position);
   if(settings.background_enabled)
   {
      //show bitmap
@@ -238,13 +248,16 @@ static void main_window_update()
   }
   
   //position of clock
-  if(strcmp(settings.position,"top") == 0)
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "window update position: %d", settings.position);
+  if(settings.position == TOP)
   {
+     APP_LOG(APP_LOG_LEVEL_DEBUG, "Put clock top");
     set_weekday_y(dayt_y);
     set_time_y(timet_y);   
   }
   else
   {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Put clock in center");
     set_weekday_y(dayc_y);
     set_time_y(timec_y);
           
@@ -261,7 +274,9 @@ static void main_window_update()
   }  
   
  //date font
-  if(strcmp(settings.date_font,"pixel") == 0)
+  
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "window update date font: %d",settings.date_font);
+  if(settings.date_font == PIXEL)
   {
     text_layer_set_font(s_date_layer, s_date_font_pixel);
   }
@@ -297,7 +312,7 @@ static void update_time()
   //get time 
   static char s_buffer[8];
   strftime(s_buffer, sizeof(s_buffer), clock_is_24h_style() ? "%H:%M" : "%I:%M", tick_time);
-  APP_LOG(APP_LOG_LEVEL_DEBUG, s_buffer);
+  
   
   //display time on text layer
   text_layer_set_text(s_time1_layer, s_buffer);
@@ -371,19 +386,28 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
   }
 
   Tuple *position = dict_find(iter, MESSAGE_KEY_position);
-  if(position) {
-    settings.position = position->value->cstring;
+  if(position) {    
+    if(strcmp(position->value->cstring, "top")==0)    
+       settings.position=TOP;    
+    else    
+         settings.position=CENTER;
+    
+  
   }
-
   Tuple *date_font = dict_find(iter, MESSAGE_KEY_date_font);
   if(date_font) {
-    settings.date_font = date_font->value->cstring;
+    if(strcmp(date_font->value->cstring, "pixel")==0)
+        settings.date_font=PIXEL;
+    else   
+         settings.date_font=LIES;
+    
   }
   
  prv_save_settings();
 }
 
 static void prv_save_settings() {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Save settings");
   persist_write_data(SETTINGS_KEY, &settings, sizeof(settings));
   
   //refresh window
@@ -392,19 +416,25 @@ static void prv_save_settings() {
 
 // Read settings from persistent storage
 static void prv_load_settings() {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Load settings");
   // Load the default settings
   prv_default_settings();
   // Read settings from persistent storage, if they exist
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Position load setting after defaoult: %d",  settings.position);
   persist_read_data(SETTINGS_KEY, &settings, sizeof(settings));
 }
 
 static void prv_default_settings() {
-   
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Load default setting");  
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Load bg");
   settings.background_enabled = true;
   settings.background_color = GColorWhite;
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Load date");
   settings.date_enabled = true;
-  settings.position = "top";
-  settings.date_font = "lies";
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Position def before: %d",  settings.position);
+  settings.position=TOP;
+  settings.date_font=LIES;
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Position def after: %d",  settings.position);
 }
 
 static void set_weekday_y(int y)

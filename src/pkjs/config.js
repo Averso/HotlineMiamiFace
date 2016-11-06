@@ -45,8 +45,8 @@ module.exports = [
           "value": "top" 
         },
         { 
-          "label": "Middle", 
-          "value": "middle" 
+          "label": "Center", 
+          "value": "center" 
         }
       ]
       },
