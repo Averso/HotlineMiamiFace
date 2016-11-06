@@ -143,7 +143,7 @@ static void init()
   
   // Make sure the time is displayed from the start
   update_time();
- // update_day();
+  update_day();
   if(settings.date_enabled)
     update_date();
 }
@@ -355,7 +355,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
   }
   if(units_changed & DAY_UNIT)
   {
-  // update_day();
+    update_day();
     
    if(settings.date_enabled)
       update_date();
