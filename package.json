@@ -14,11 +14,18 @@
             "text",
             "position",
             "show_date",
-            "date_font"
+            "date_font",
+            "date_color"
         ],
         "projectType": "native",
         "resources": {
             "media": [
+                {
+                    "file": "images/background_pt2.png",
+                    "name": "IMAGE_BACKGROUND_PT2",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
                 {
                     "file": "images/background_ptr.png",
                     "name": "IMAGE_BACKGROUND_PTR",
@@ -33,13 +40,32 @@
                 },
                 {
                     "file": "fonts/pixelmix.ttf",
+                    "name": "FONT_PIXELMIX_16",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/pixelmix.ttf",
                     "name": "FONT_PIXELMIX_11",
                     "targetPlatforms": null,
                     "type": "font"
                 },
                 {
                     "file": "fonts/truelies.ttf",
+                    "name": "FONT_TRUELIES_17",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/truelies.ttf",
                     "name": "FONT_TRUELIES_13",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "characterRegex": "[a-z]",
+                    "file": "fonts/discoduckv2c.ttf",
+                    "name": "FONT_DISCODUCK_CON_40",
                     "targetPlatforms": null,
                     "type": "font"
                 },
@@ -52,7 +78,7 @@
                 {
                     "characterRegex": "[a-z]",
                     "file": "fonts/discoduckv2.ttf",
-                    "name": "FONT_DISCODUCK_22",
+                    "name": "FONT_DISCODUCK_30",
                     "targetPlatforms": null,
                     "type": "font"
                 },
@@ -66,6 +92,13 @@
                 {
                     "characterRegex": "[0-9:]",
                     "file": "fonts/RobotoCondensed-Bold.ttf",
+                    "name": "FONT_ROBOTO_50",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "characterRegex": "[0-9:]",
+                    "file": "fonts/RobotoCondensed-Bold.ttf",
                     "name": "FONT_ROBOTO_40",
                     "targetPlatforms": null,
                     "type": "font"
@@ -75,12 +108,13 @@
         "sdkVersion": "3",
         "targetPlatforms": [
             "basalt",
-            "chalk"
+            "chalk",
+            "emery"
         ],
         "uuid": "22a381e1-f2c8-4450-9db5-1c996f2a6410",
         "watchapp": {
             "watchface": true
         }
     },
-    "version": "1.2.0"
+    "version": "1.4.0"
 }

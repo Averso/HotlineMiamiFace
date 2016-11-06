@@ -18,20 +18,52 @@ static GBitmap *s_background_bitmap;                              //bitmaps
 //positions of layers 
 static int date_x = 0;
 // y position of date depending on platform
+
 #if defined(PBL_PLATFORM_BASALT)
 static int date_y = 150;
 #endif
 #if defined(PBL_PLATFORM_CHALK)
 static int date_y = 120;
-#endif  
+#endif 
+#if defined(PBL_PLATFORM_EMERY)
+static int date_y = 205;
+#endif 
+
 static int day_x = 0;
 static int time_x = 0;
 //positions of clock,weekday layers - center
-static int dayc_y = 45;
-static int timec_y = 67;
+
 //positions of clock,weekday layers - top
+
+#if defined(PBL_PLATFORM_BASALT)
 static int dayt_y = 15;
 static int timet_y = 37;
+static int dayc_y = 45;
+static int timec_y = 67;
+#endif
+#if defined(PBL_PLATFORM_CHALK)
+static int dayt_y = 25;
+static int timet_y = 57;
+static int dayc_y = 55;
+static int timec_y = 77;
+#endif 
+#if defined(PBL_PLATFORM_EMERY)
+static int dayt_y = 25;
+static int timet_y = 57;
+static int dayc_y = 55;
+static int timec_y = 87;
+#endif 
+
+#if defined(PBL_PLATFORM_BASALT) || (PBL_PLATFORM_CHALK)
+static int day_text_height = 35;
+static int date_text_height = 18;
+static int time_text_height = 60;
+#endif 
+#if defined(PBL_PLATFORM_EMERY)
+static int day_text_height = 50;
+static int date_text_height = 30;
+static int time_text_height = 80;
+#endif 
 
 
 
@@ -62,6 +94,7 @@ typedef enum {TOP, CENTER} Position;
 // Define our settings struct
 typedef struct ClaySettings {
   GColor background_color;
+  GColor date_color;
   bool background_enabled;
   bool date_enabled;
   Position position; 
@@ -110,7 +143,7 @@ static void init()
   
   // Make sure the time is displayed from the start
   update_time();
-  update_day();
+ // update_day();
   if(settings.date_enabled)
     update_date();
 }
@@ -132,10 +165,20 @@ static void main_window_load(Window *window)
   bounds = layer_get_bounds(window_layer);
   
   //FONTS
+  
+  #if defined(PBL_PLATFORM_BASALT) || (PBL_PLATFORM_CHALK)
   s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_40));
   s_day_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DISCODUCK_CON_30));  
   s_date_font_lies = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TRUELIES_13));
   s_date_font_pixel = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PIXELMIX_11));
+  #endif
+  #if defined(PBL_PLATFORM_EMERY)
+  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_50));
+  s_day_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DISCODUCK_CON_40));  
+  s_date_font_lies = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TRUELIES_17));
+  s_date_font_pixel = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PIXELMIX_16));
+  #endif 
+  
   
   //BACKGROUND
   
@@ -146,6 +189,9 @@ static void main_window_load(Window *window)
   #if defined(PBL_PLATFORM_CHALK)
   s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND_PTR);
   #endif
+  #if defined(PBL_PLATFORM_EMERY)
+  s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND_PT2);
+  #endif
   s_background_layer=bitmap_layer_create(bounds);
   window_set_background_color(window, settings.background_color);
     
@@ -153,21 +199,21 @@ static void main_window_load(Window *window)
   //create text layers 
   //date
   s_date_layer = text_layer_create(
-    GRect(date_x, date_y, bounds.size.w, 18));
+    GRect(date_x, date_y, bounds.size.w, date_text_height));
   
   //days
   s_day1_layer = text_layer_create(
-    GRect(day_x, dayt_y, bounds.size.w, 35));
+    GRect(day_x, dayt_y, bounds.size.w, day_text_height));
   s_day2_layer = text_layer_create(
-    GRect(day_x+2, dayt_y+2, bounds.size.w, 35));
+    GRect(day_x+2, dayt_y+2, bounds.size.w, day_text_height));
   s_day3_layer = text_layer_create(
-    GRect(day_x+5, dayt_y+4, bounds.size.w, 35));
+    GRect(day_x+5, dayt_y+4, bounds.size.w, day_text_height));
   s_day4_layer = text_layer_create(
-    GRect(day_x+6, dayt_y+6, bounds.size.w, 35));
+    GRect(day_x+6, dayt_y+6, bounds.size.w, day_text_height));
   s_day5_layer = text_layer_create(
-    GRect(day_x+7, dayt_y+8, bounds.size.w, 35));
+    GRect(day_x+7, dayt_y+8, bounds.size.w, day_text_height));
   s_day6_layer = text_layer_create(
-    GRect(day_x+8, dayt_y+10, bounds.size.w, 35));
+    GRect(day_x+8, dayt_y+10, bounds.size.w, day_text_height));
   
   
   s_time1_layer = text_layer_create(
@@ -259,6 +305,8 @@ static void main_window_update()
     bitmap_layer_set_compositing_mode(s_background_layer, GCompOpClear);    
     
   }
+  //date color
+  text_layer_set_text_color(s_date_layer,  settings.date_color);
   
   //position of clock
   APP_LOG(APP_LOG_LEVEL_DEBUG, "window update position: %d", settings.position);
@@ -286,9 +334,7 @@ static void main_window_update()
     text_layer_set_text(s_date_layer,"");          
   }  
   
- //date font
-  
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "window update date font: %d",settings.date_font);
+  //date font  
   if(settings.date_font == PIXEL)
   {
     text_layer_set_font(s_date_layer, s_date_font_pixel);
@@ -309,7 +355,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
   }
   if(units_changed & DAY_UNIT)
   {
-   update_day();
+  // update_day();
     
    if(settings.date_enabled)
       update_date();
@@ -392,6 +438,10 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
   if(bg_color) {
    settings.background_color = GColorFromHEX(bg_color->value->int32);
   }
+  Tuple *date_color = dict_find(iter, MESSAGE_KEY_date_color);
+  if(bg_color) {
+   settings.date_color = GColorFromHEX(date_color->value->int32);
+  }
   
   Tuple *show_date = dict_find(iter, MESSAGE_KEY_show_date);
   if(bg_color) {
@@ -420,7 +470,6 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
 }
 
 static void prv_save_settings() {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Save settings");
   persist_write_data(SETTINGS_KEY, &settings, sizeof(settings));
   
   //refresh window
@@ -429,39 +478,33 @@ static void prv_save_settings() {
 
 // Read settings from persistent storage
 static void prv_load_settings() {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Load settings");
   // Load the default settings
   prv_default_settings();
   // Read settings from persistent storage, if they exist
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Position load setting after defaoult: %d",  settings.position);
   persist_read_data(SETTINGS_KEY, &settings, sizeof(settings));
 }
 
 static void prv_default_settings() {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Load default setting");  
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Load bg");
   settings.background_enabled = true;
   settings.background_color = GColorWhite;
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Load date");
+  settings.date_color = GColorTiffanyBlue;
   settings.date_enabled = true;
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Position def before: %d",  settings.position);
   settings.position=TOP;
   settings.date_font=LIES;
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Position def after: %d",  settings.position);
 }
 
 static void set_weekday_y(int y)
 {
-    layer_set_frame(text_layer_get_layer(s_day1_layer), GRect(day_x, y, bounds.size.w, 35));
-    layer_set_frame(text_layer_get_layer(s_day2_layer), GRect(day_x+2, y+2, bounds.size.w, 35));
-    layer_set_frame(text_layer_get_layer(s_day3_layer), GRect(day_x+5, y+4, bounds.size.w, 35));                 
-    layer_set_frame(text_layer_get_layer(s_day4_layer), GRect(day_x+6, y+6, bounds.size.w, 35));                 
-    layer_set_frame(text_layer_get_layer(s_day5_layer), GRect(day_x+7, y+8, bounds.size.w, 35));      
-    layer_set_frame(text_layer_get_layer(s_day6_layer), GRect(day_x+8, y+10, bounds.size.w, 35)); 
+    layer_set_frame(text_layer_get_layer(s_day1_layer), GRect(day_x, y, bounds.size.w, day_text_height));
+    layer_set_frame(text_layer_get_layer(s_day2_layer), GRect(day_x+2, y+2, bounds.size.w, day_text_height));
+    layer_set_frame(text_layer_get_layer(s_day3_layer), GRect(day_x+5, y+4, bounds.size.w, day_text_height));                 
+    layer_set_frame(text_layer_get_layer(s_day4_layer), GRect(day_x+6, y+6, bounds.size.w, day_text_height));                 
+    layer_set_frame(text_layer_get_layer(s_day5_layer), GRect(day_x+7, y+8, bounds.size.w, day_text_height));      
+    layer_set_frame(text_layer_get_layer(s_day6_layer), GRect(day_x+8, y+10, bounds.size.w, day_text_height)); 
 }
 static void set_time_y(int y)
 {
-    layer_set_frame(text_layer_get_layer(s_time1_layer), GRect(time_x, y, bounds.size.w, 60));                 
-    layer_set_frame(text_layer_get_layer(s_time2_layer), GRect(time_x+1, y-1, bounds.size.w, 60));      
-    layer_set_frame(text_layer_get_layer(s_time3_layer), GRect(time_x+4, y+2, bounds.size.w, 60));  
+    layer_set_frame(text_layer_get_layer(s_time1_layer), GRect(time_x, y, bounds.size.w, time_text_height));                 
+    layer_set_frame(text_layer_get_layer(s_time2_layer), GRect(time_x+1, y-1, bounds.size.w, time_text_height));      
+    layer_set_frame(text_layer_get_layer(s_time3_layer), GRect(time_x+4, y+2, bounds.size.w, time_text_height));  
 }

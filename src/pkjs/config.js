@@ -71,7 +71,13 @@ module.exports = [
           "value": "lies" 
         }
       ]
-    }   
+     },
+     {
+        "type": "color",
+        "messageKey": "date_color",
+        "defaultValue": "0x00AAAA",
+        "label": "Date color"        
+     }
     ]
   },
   {
