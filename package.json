@@ -24,14 +24,6 @@
         "resources": {
             "media": [
                 {
-                    "file": "images/background_pt2.png",
-                    "name": "IMAGE_BACKGROUND_PT2",
-                    "targetPlatforms": [
-                        "emery"
-                    ],
-                    "type": "bitmap"
-                },
-                {
                     "file": "images/background_ptr.png",
                     "name": "IMAGE_BACKGROUND_PTR",
                     "targetPlatforms": [
@@ -50,15 +42,6 @@
                 {
                     "characterRegex": "[0-9a-zA-Z,]",
                     "file": "fonts/pixelmix.ttf",
-                    "name": "FONT_PIXELMIX_16",
-                    "targetPlatforms": [
-                        "emery"
-                    ],
-                    "type": "font"
-                },
-                {
-                    "characterRegex": "[0-9a-zA-Z,]",
-                    "file": "fonts/pixelmix.ttf",
                     "name": "FONT_PIXELMIX_11",
                     "targetPlatforms": [
                         "basalt",
@@ -69,28 +52,10 @@
                 {
                     "characterRegex": "[0-9a-zA-Z,]",
                     "file": "fonts/truelies.ttf",
-                    "name": "FONT_TRUELIES_17",
-                    "targetPlatforms": [
-                        "emery"
-                    ],
-                    "type": "font"
-                },
-                {
-                    "characterRegex": "[0-9a-zA-Z,]",
-                    "file": "fonts/truelies.ttf",
                     "name": "FONT_TRUELIES_13",
                     "targetPlatforms": [
                         "basalt",
                         "chalk"
-                    ],
-                    "type": "font"
-                },
-                {
-                    "characterRegex": "[a-z]",
-                    "file": "fonts/discoduckv2c.ttf",
-                    "name": "FONT_DISCODUCK_CON_40",
-                    "targetPlatforms": [
-                        "emery"
                     ],
                     "type": "font"
                 },
@@ -114,15 +79,6 @@
                 {
                     "characterRegex": "[0-9:]",
                     "file": "fonts/RobotoCondensed-Bold.ttf",
-                    "name": "FONT_ROBOTO_50",
-                    "targetPlatforms": [
-                        "emery"
-                    ],
-                    "type": "font"
-                },
-                {
-                    "characterRegex": "[0-9:]",
-                    "file": "fonts/RobotoCondensed-Bold.ttf",
                     "name": "FONT_ROBOTO_40",
                     "targetPlatforms": [
                         "basalt",
@@ -135,8 +91,7 @@
         "sdkVersion": "3",
         "targetPlatforms": [
             "basalt",
-            "chalk",
-            "emery"
+            "chalk"
         ],
         "uuid": "22a381e1-f2c8-4450-9db5-1c996f2a6410",
         "watchapp": {
