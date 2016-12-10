@@ -3,6 +3,7 @@
 #include "settings.h"
 #include "window.h"
 #include "time.h"
+#include "callbacks.h"
 
 static void init();   //called on start
 static void unload(); //called on exit
@@ -33,9 +34,16 @@ static void init()
   
   //add window
   window_stack_push(main_window, true);
+  
+  //register for bluetooth conection updates
+  connection_service_subscribe((ConnectionHandlers)
+     {
+       .pebble_app_connection_handler = bluetooth_callback
+     });
     
   //set ticktimeservice
   tick_timer_service_subscribe(MINUTE_UNIT | DAY_UNIT, tick_handler);
+  
   
   // Make sure the time is displayed from the start
   update_time();

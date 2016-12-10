@@ -2,7 +2,7 @@
 #include "window.h"
 #include "global.h"
 #include "time.h"
-
+#include "callbacks.h"
 
 void window_load(Window *window)
 {
@@ -16,9 +16,20 @@ void window_load(Window *window)
   load_resources();  
   create_bitmap_layers(bounds);
   create_text_layers();    
+  //create bluetooth&quiettime layers
+  
 
   //add layers    
   add_layers_to_window(window_layer);
+  
+   //turn on transparency
+  bitmap_layer_set_compositing_mode(layer_bluetooth, GCompOpSet); 
+  bitmap_layer_set_compositing_mode(layer_quiettime, GCompOpSet);   
+  
+  
+  //hide icons
+  layer_set_hidden(bitmap_layer_get_layer(layer_bluetooth),true);
+  layer_set_hidden(bitmap_layer_get_layer(layer_quiettime),true);
   
   //call to update window elements depending on settings
   window_update();
@@ -27,9 +38,9 @@ void window_load(Window *window)
 void window_unload(Window *window)
 {
   //destroy text layers
-  for(int i=0;i<3;i++)
+  for(int i=0;i<TIME_LAYERS_SIZE;i++)
    text_layer_destroy(layer_time[i]);
-  for(int i=0;i<6;i++)    
+  for(int i=0;i<WDAY_LAYERS_SIZE;i++)    
     text_layer_destroy(layer_weekday[i]);
   text_layer_destroy(layer_date);
   
@@ -44,10 +55,17 @@ void window_unload(Window *window)
   //destroy gbitmap
   gbitmap_destroy(bitmap_background);
   bitmap_layer_destroy(layer_background);
+  gbitmap_destroy(bitmap_bluetooth);
+  bitmap_layer_destroy(layer_bluetooth);
+  gbitmap_destroy(bitmap_quiettime);
+  bitmap_layer_destroy(layer_quiettime);
 }
 
 void window_update()
 { 
+  //check bt status
+  bluetooth_callback(connection_service_peek_pebble_app_connection());  
+    
   //if background image is enabled - show image
   //we change visibility mode of bitmap layer
   if(settings.background_enabled)
@@ -121,12 +139,21 @@ void load_resources()
   bitmap_background = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND_PTR);
   #endif
   
+  bitmap_bluetooth = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ICON_BT);
+  bitmap_quiettime = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ICON_QT);
+  
 }
 
 void create_bitmap_layers(GRect bounds)
 {  
   layer_background = bitmap_layer_create(bounds);   
-  bitmap_layer_set_bitmap(layer_background,bitmap_background);    
+  bitmap_layer_set_bitmap(layer_background,bitmap_background); 
+  
+  layer_bluetooth = bitmap_layer_create(GRect(LAYER_ICON_BT_X,LAYER_ICON_BT_Y, LAYER_ICON_W,LAYER_ICON_H));
+  bitmap_layer_set_bitmap(layer_bluetooth,bitmap_bluetooth); 
+  
+  layer_quiettime = bitmap_layer_create(GRect(LAYER_ICON_QT_X,LAYER_ICON_QT_Y, LAYER_ICON_W,LAYER_ICON_H));
+  bitmap_layer_set_bitmap(layer_quiettime,bitmap_quiettime); 
 }
 
 void create_text_layers()
@@ -178,14 +205,17 @@ void create_text_layers()
 void add_layers_to_window(Layer *window_layer)
 {
    layer_add_child(window_layer,bitmap_layer_get_layer(layer_background));
-   for(int i=5;i>=0;i--)   
+   for(int i=WDAY_LAYERS_SIZE-1;i>=0;i--)   
       layer_add_child(window_layer,text_layer_get_layer(layer_weekday[i]));          //days
       
-   for(int i=2;i>=0;i--)   
+   for(int i=TIME_LAYERS_SIZE-1;i>=0;i--)   
       layer_add_child(window_layer,text_layer_get_layer(layer_time[i]));       
     
   
   layer_add_child(window_layer,text_layer_get_layer(layer_date));         //date
+  
+  layer_add_child(window_layer,bitmap_layer_get_layer(layer_bluetooth));
+  layer_add_child(window_layer,bitmap_layer_get_layer(layer_quiettime));
 }
 
 void set_up_text_layer(TextLayer *layer, GColor background, GColor text_color, const char * text,GFont font,GTextAlignment alignment)
@@ -199,26 +229,26 @@ void set_up_text_layer(TextLayer *layer, GColor background, GColor text_color, c
 
 void set_weekday_y(int y)
 {
-    layer_set_frame(text_layer_get_layer(layer_weekday1),
+    layer_set_frame(text_layer_get_layer(layer_weekday[0]),
                     GRect(LAYER_WEEKDAY_X, y, bounds.size.w, LAYER_WEEKDAY_H));
-    layer_set_frame(text_layer_get_layer(layer_weekday2),
+    layer_set_frame(text_layer_get_layer(layer_weekday[1]),
                     GRect(LAYER_WEEKDAY_X+2, y+2, bounds.size.w, LAYER_WEEKDAY_H));
-    layer_set_frame(text_layer_get_layer(layer_weekday3),
+    layer_set_frame(text_layer_get_layer(layer_weekday[2]),
                     GRect(LAYER_WEEKDAY_X+5, y+4, bounds.size.w, LAYER_WEEKDAY_H));                 
-    layer_set_frame(text_layer_get_layer(layer_weekday4),
+    layer_set_frame(text_layer_get_layer(layer_weekday[3]),
                     GRect(LAYER_WEEKDAY_X+6, y+6, bounds.size.w, LAYER_WEEKDAY_H));                 
-    layer_set_frame(text_layer_get_layer(layer_weekday5),
+    layer_set_frame(text_layer_get_layer(layer_weekday[4]),
                     GRect(LAYER_WEEKDAY_X+7, y+8, bounds.size.w, LAYER_WEEKDAY_H));      
-    layer_set_frame(text_layer_get_layer(layer_weekday6),
+    layer_set_frame(text_layer_get_layer(layer_weekday[5]),
                     GRect(LAYER_WEEKDAY_X+8, y+10, bounds.size.w, LAYER_WEEKDAY_H)); 
 }
 
 void set_time_y(int y)
 {
-    layer_set_frame(text_layer_get_layer(layer_time1),
+    layer_set_frame(text_layer_get_layer(layer_time[0]),
                     GRect(LAYER_TIME_X, y, bounds.size.w, LAYER_TIME_H));                 
-    layer_set_frame(text_layer_get_layer(layer_time2),
+    layer_set_frame(text_layer_get_layer(layer_time[1]),
                     GRect(LAYER_TIME_X+1, y-1, bounds.size.w, LAYER_TIME_H));      
-    layer_set_frame(text_layer_get_layer(layer_time3),
+    layer_set_frame(text_layer_get_layer(layer_time[2]),
                     GRect(LAYER_TIME_X+4, y+2, bounds.size.w, LAYER_TIME_H));  
 }

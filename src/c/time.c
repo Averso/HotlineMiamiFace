@@ -8,6 +8,9 @@ void tick_handler(struct tm *tick_time, TimeUnits units_changed)
   if (units_changed & MINUTE_UNIT)
   {
      update_time();
+     //show/hide quiet time icon depending if it's on
+     layer_set_hidden(bitmap_layer_get_layer(layer_quiettime), !quiet_time_is_active());
+     
   }
   if(units_changed & DAY_UNIT)
   {
@@ -29,9 +32,10 @@ void update_time()
   strftime(s_buffer, sizeof(s_buffer), clock_is_24h_style() ? "%H:%M" : "%I:%M", tick_time);  
   
   //display time on text layer
-  text_layer_set_text(layer_time1, s_buffer);
-  text_layer_set_text(layer_time2, s_buffer);
-  text_layer_set_text(layer_time3, s_buffer);
+  for(int i=0; i<TIME_LAYERS_SIZE;i++)
+    text_layer_set_text(layer_time[i], s_buffer);
+  //text_layer_set_text(layer_time[1], s_buffer);
+//   text_layer_set_text(layer_time[2], s_buffer);
 }
 
 void update_weekday() 
@@ -51,12 +55,14 @@ void update_weekday()
     i++;
   }
   //change text on weekday text layers
-  text_layer_set_text(layer_weekday1, s_buffer);
-  text_layer_set_text(layer_weekday2, s_buffer);
-  text_layer_set_text(layer_weekday3, s_buffer);
-  text_layer_set_text(layer_weekday4, s_buffer);
-  text_layer_set_text(layer_weekday5, s_buffer);
-  text_layer_set_text(layer_weekday6, s_buffer);
+  for(int i=0; i<WDAY_LAYERS_SIZE;i++)
+    text_layer_set_text(layer_weekday[i], s_buffer);
+//   text_layer_set_text(layer_weekday1, s_buffer);
+//   text_layer_set_text(layer_weekday2, s_buffer);
+//   text_layer_set_text(layer_weekday3, s_buffer);
+//   text_layer_set_text(layer_weekday4, s_buffer);
+//   text_layer_set_text(layer_weekday5, s_buffer);
+//   text_layer_set_text(layer_weekday6, s_buffer);
   
   
 }

@@ -81,6 +81,21 @@ module.exports = [
     ]
   },
   {
+    "type": "section",      
+    "items": [
+      {
+      "type": "heading",
+      "defaultValue": "Others"
+      },
+      {
+        "type": "toggle",
+        "messageKey": "vibe_disconnect",
+        "label": "Vibrate on disconnect",
+        "defaultValue": false
+      }
+    ]
+  },
+  {
     "type": "submit",
     "defaultValue": "Save Settings"
   }

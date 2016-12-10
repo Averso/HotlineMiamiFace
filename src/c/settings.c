@@ -5,6 +5,7 @@
 void inbox_received_handler(DictionaryIterator *iter, void *context) {
   
   //assign the values from settings to struct
+  
   //background enabled
   Tuple *bg_enabled = dict_find(iter, MESSAGE_KEY_enable_background);
   if(bg_enabled) {
@@ -41,7 +42,12 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
     else   
          settings.date_font=LIES;    
   }
- 
+ //vibration
+  Tuple *vibe_enabled = dict_find(iter, MESSAGE_KEY_vibe_disconnect);
+  if(vibe_enabled)
+    settings.vibe_on_disconnect = vibe_enabled->value->int32 == 1;
+  
+  
  //save loaded settings
  save_settings();
 }
@@ -67,4 +73,5 @@ void load_default_settings() {
   settings.date_enabled = true;
   settings.position=TOP;
   settings.date_font=LIES;
+  settings.vibe_on_disconnect=false;
 }

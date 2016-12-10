@@ -18,11 +18,30 @@
             "position",
             "show_date",
             "date_font",
-            "date_color"
+            "date_color",
+            "vibe_disconnect"
         ],
         "projectType": "native",
         "resources": {
             "media": [
+                {
+                    "file": "images/qt.png",
+                    "name": "IMAGE_ICON_QT",
+                    "targetPlatforms": [
+                        "basalt",
+                        "chalk"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/bt.png",
+                    "name": "IMAGE_ICON_BT",
+                    "targetPlatforms": [
+                        "basalt",
+                        "chalk"
+                    ],
+                    "type": "bitmap"
+                },
                 {
                     "file": "images/background_ptr.png",
                     "name": "IMAGE_BACKGROUND_PTR",
@@ -98,5 +117,5 @@
             "watchface": true
         }
     },
-    "version": "1.6.0"
+    "version": "1.7.0"
 }
