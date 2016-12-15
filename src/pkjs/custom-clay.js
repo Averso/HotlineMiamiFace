@@ -2,7 +2,6 @@ module.exports = function() {
   var clayConfig = this;
   
 
-  //we get auth key for user in clay settings  
   function toggleBackground()
   { 
     if (this.get()) {

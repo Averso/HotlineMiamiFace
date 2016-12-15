@@ -52,14 +52,16 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
  save_settings();
 }
 
-void save_settings() {
+void save_settings() 
+{
   persist_write_data(SETTINGS_KEY, &settings, sizeof(settings));
   
   //refresh window
   window_update();
 }
 
-void load_settings() {
+void load_settings() 
+{
   // Load the default settings
   load_default_settings();
   // Read settings from persistent storage, if they exist

@@ -120,6 +120,8 @@ void window_update()
           
   }
   
+  update_time();
+  
   
 }
 

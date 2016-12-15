@@ -8,8 +8,7 @@ void tick_handler(struct tm *tick_time, TimeUnits units_changed)
   if (units_changed & MINUTE_UNIT)
   {
      update_time();
-     //show/hide quiet time icon depending if it's on
-     layer_set_hidden(bitmap_layer_get_layer(layer_quiettime), !quiet_time_is_active());
+     
      
   }
   if(units_changed & DAY_UNIT)
@@ -34,8 +33,9 @@ void update_time()
   //display time on text layer
   for(int i=0; i<TIME_LAYERS_SIZE;i++)
     text_layer_set_text(layer_time[i], s_buffer);
-  //text_layer_set_text(layer_time[1], s_buffer);
-//   text_layer_set_text(layer_time[2], s_buffer);
+  
+  //show/hide quiet time icon depending if it's on
+  layer_set_hidden(bitmap_layer_get_layer(layer_quiettime), !quiet_time_is_active());
 }
 
 void update_weekday() 
